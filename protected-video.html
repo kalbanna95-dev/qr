@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Protected Video — Enter Password</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <main class="card login-card" id="loginBox" aria-labelledby="loginTitle" role="dialog">
+      <div class="brand">🔒</div>
+      <h1 id="loginTitle">Protected Video</h1>
+      <p class="sub">Enter the page password to view the protected video.</p>
+
+      <div class="field">
+        <input id="password" class="input" type="password" placeholder="Password" autocomplete="off" aria-label="Password">
+        <button id="unlockBtn" class="btn">Unlock</button>
+      </div>
+
+      <p id="errorMsg" class="error" role="alert" aria-live="polite"></p>
+      <p class="muted">Client-side protection only — suitable for casual privacy on GitHub Pages.</p>
+    </main>
+
+    <section id="content" class="card content-card hidden" data-password="ocean-2026!" data-type="iframe" data-src="https://www.youtube.com/embed/dQw4w9WgXcQ" aria-hidden="true">
+      <h2>▶️ Protected Video</h2>
+      <div class="media-wrap"></div>
+    </section>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

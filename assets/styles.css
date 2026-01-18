@@ -1,0 +1,62 @@
+:root{
+  --bg1: rgba(255,255,255,0.06);
+  --bg2: rgba(255,255,255,0.04);
+  --glass: rgba(255,255,255,0.12);
+  --accent: 220, 90%, 60%;
+  --text: rgba(255,255,255,0.95);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+body{
+  background: linear-gradient(135deg, rgba(13,26,49,1) 0%, rgba(12,18,38,1) 50%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  display:flex;align-items:center;justify-content:center;padding:32px;
+  min-height:100vh;
+  background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.page-wrap{width:100%;max-width:1100px;margin:auto;position:relative}
+
+.card{
+  width:100%;max-width:420px;margin:0 auto;padding:28px;border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+.login-title{font-size:18px;font-weight:600;margin:0 0 8px}
+.login-sub{font-size:13px;opacity:0.8;margin:0 0 18px}
+
+.field{display:flex;gap:8px}
+.input{flex:1;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text);outline:none}
+.btn{padding:11px 14px;border-radius:10px;border:none;background:linear-gradient(90deg, hsl(var(--accent)/0.92), hsl(calc(220) /0.92));color:#071227;font-weight:700;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+
+.error{color:#ff7b7b;font-size:13px;margin-top:10px;display:none}
+
+.protected{margin-top:28px;text-align:center}
+.protected img,.protected iframe{width:100%;height:auto;border-radius:12px;max-height:75vh;display:block;margin:0 auto}
+
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+/* small layout */
+@media (max-width:520px){
+  .card{padding:18px;border-radius:12px}
+  .login-title{font-size:16px}
+}
+
+/* subtle entrance */
+.card{transform-origin:center;animation:cardIn 420ms cubic-bezier(.2,.9,.2,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+
+/* shake */
+.shake{animation:shake .6s}
+@keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+
+/* small helper */
+.muted{opacity:0.85;font-size:13px}

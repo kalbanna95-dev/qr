@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video 1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card" id="loginBox">
+  <h2>🔒 Video Access</h2>
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="checkPassword('VID1PASS')">Unlock</button>
+  <p id="errorMsg"></p>
+</div>
+
+<div class="card hidden" id="content">
+  <h2>🎬 Video</h2>
+  <video controls>
+    <source src="video1.mp4" type="video/mp4">
+  </video>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

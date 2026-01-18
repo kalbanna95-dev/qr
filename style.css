@@ -1,0 +1,54 @@
+:root{
+  --bgA: #0b1220;
+  --bgB: #0f243b;
+  --glass: rgba(255,255,255,0.06);
+  --accent: 210, 95%, 55%;
+  --muted: rgba(255,255,255,0.75);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,system-ui,-apple-system,Arial}
+body{
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.02), transparent), linear-gradient(135deg,var(--bgA),var(--bgB));
+  color: #fff;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{width:100%;max-width:980px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border-radius:14px;padding:26px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 8px 30px rgba(2,6,23,0.6);backdrop-filter:blur(10px) saturate(120%)}
+
+.login-card{max-width:420px;margin:0 auto;text-align:center}
+.brand{font-size:34px;background:linear-gradient(90deg, hsl(var(--accent)/0.9), hsl(calc(var(--accent) - 20) /0.9));-webkit-background-clip:text;background-clip:text;margin-bottom:6px}
+.login-card h1{margin:6px 0 6px;font-size:20px}
+.sub{color:var(--muted);margin:0 0 16px}
+
+.field{display:flex;gap:10px}
+.input{flex:1;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;outline:none;font-size:15px}
+.btn{padding:11px 14px;border-radius:10px;border:none;background:linear-gradient(90deg, hsl(var(--accent)/0.95), hsl(calc(var(--accent) - 20)/0.95));color:#071227;font-weight:700;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+
+.error{color:#ff7b7b;font-size:14px;margin-top:12px;min-height:20px}
+.muted{font-size:13px;color:var(--muted);margin-top:12px}
+
+.content-card h2{margin-top:0}
+.media-wrap{margin-top:12px}
+.media-wrap img{width:100%;height:auto;border-radius:12px;display:block}
+
+.hidden{display:none}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr;gap:18px}
+  .login-card{order:2}
+}
+
+@media (max-width:420px){
+  .field{flex-direction:column}
+  .btn{width:100%}
+}
+
+/* subtle animations */
+.card{animation:cardIn .36s cubic-bezier(.2,.9,.2,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.995)}to{opacity:1;transform:none}}
+

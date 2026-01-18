@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Protected Image Viewer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* CSS Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.15);
+      --transition: all 0.3s ease;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Card Styles */
+    .card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Login Card */
+    .login-card {
+      padding: 40px 30px;
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .brand i {
+      filter: drop-shadow(0 3px 5px rgba(67, 97, 238, 0.3));
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .sub {
+      font-size: 1.1rem;
+      color: var(--gray);
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    /* Field Styles */
+    .field {
+      display: flex;
+      margin-bottom: 25px;
+      border-radius: var(--border-radius-sm);
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .input {
+      flex: 1;
+      padding: 18px 20px;
+      border: none;
+      background-color: var(--light);
+      font-size: 1rem;
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .input:focus {
+      background-color: white;
+      box-shadow: inset 0 0 0 2px var(--primary);
+    }
+
+    .input::placeholder {
+      color: #aaa;
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+    }
+
+    /* Error Message */
+    .error {
+      color: var(--danger);
+      background-color: rgba(247, 37, 133, 0.1);
+      padding: 12px 15px;
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 20px;
+      font-weight: 500;
+      display: none;
+      text-align: center;
+    }
+
+    .error.show {
+      display: block;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    /* Muted Text */
+    .muted {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid var(--light-gray);
+      line-height: 1.5;
+    }
+
+    /* Content Card */
+    .content-card {
+      padding: 30px;
+      display: none;
+    }
+
+    .content-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .media-wrap {
+      border-radius: var(--border-radius-sm);
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+      background-color: var(--light-gray);
+      min-height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    #protectedImg {
+      max-width: 100%;
+      max-height: 600px;
+      display: none;
+      border-radius: var(--border-radius-sm);
+    }
+
+    .img-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      color: var(--gray);
+      text-align: center;
+    }
+
+    .img-placeholder i {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      opacity: 0.7;
+    }
+
+    .img-placeholder p {
+      font-size: 1.1rem;
+    }
+
+    .back-btn {
+      background-color: var(--light-gray);
+      color: var(--dark);
+      border: none;
+      padding: 12px 25px;
+      border-radius: var(--border-radius-sm);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .back-btn:hover {
+      background-color: #ddd;
+    }
+
+    /* Utility Classes */
+    .hidden {
+      display: none;
+    }
+
+    .visible {
+      display: block;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .login-card {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .sub {
+        font-size: 1rem;
+      }
+
+      .field {
+        flex-direction: column;
+        overflow: visible;
+        gap: 15px;
+      }
+
+      .input, .btn {
+        width: 100%;
+        padding: 16px 20px;
+        border-radius: var(--border-radius-sm);
+      }
+
+      .content-card {
+        padding: 20px;
+      }
+
+      .content-card h2 {
+        font-size: 1.5rem;
+      }
+
+      .media-wrap {
+        min-height: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+
+      .login-card {
+        padding: 25px 15px;
+      }
+
+      .brand {
+        font-size: 2.8rem;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .content-card h2 {
+        font-size: 1.3rem;
+      }
+
+      .img-placeholder i {
+        font-size: 3rem;
+      }
+    }
+
+    /* Loading Animation */
+    .loader {
+      display: none;
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--light-gray);
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Password Toggle */
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--gray);
+      cursor: pointer;
+      display: none;
+    }
+
+    .password-field {
+      position: relative;
+      flex: 1;
+    }
+
+    .password-field.active .password-toggle {
+      display: block;
+    }
+
+    /* Language Support */
+    .lang-text {
+      display: block;
+    }
+
+    .lang-ar {
+      direction: rtl;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Login Section -->
+  <main class="card login-card" id="loginBox" aria-labelledby="loginTitle" role="dialog">
+    <div class="brand">
+      <i class="fas fa-lock"></i>
+    </div>
+    <h1 id="loginTitle">Protected Image Viewer</h1>
+    <p class="sub">
+      <span class="lang-text">Enter password to view protected content</span>
+      <span class="lang-text lang-ar">أدخل كلمة المرور لعرض المحتوى المحمي</span>
+    </p>
+
+    <div class="field">
+      <div class="password-field" id="passwordField">
+        <input id="password" class="input" type="password" placeholder="Password / كلمة المرور" autocomplete="off" aria-label="Password">
+        <button id="togglePassword" class="password-toggle" aria-label="Show password">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      <button id="unlockBtn" class="btn">
+        <i class="fas fa-unlock-alt"></i>
+        <span>Unlock</span>
+      </button>
+    </div>
+
+    <div class="loader" id="loader"></div>
+    
+    <p id="errorMsg" class="error" role="alert" aria-live="polite"></p>
+    <p class="muted">
+      <i class="fas fa-info-circle"></i> Client-side protection only — suitable for casual privacy. 
+      <br>For stronger security, use server-side protection.
+    </p>
+  </main>
+
+  <!-- Content Section -->
+  <section id="content" class="card content-card hidden" data-password="IMG1PASS" data-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" aria-hidden="true">
+    <h2><i class="fas fa-image"></i> Protected Image</h2>
+    
+    <div class="media-wrap">
+      <div class="img-placeholder" id="imgPlaceholder">
+        <i class="fas fa-lock"></i>
+        <p>Image unlocked successfully</p>
+      </div>
+      <img id="protectedImg" data-src="" alt="Protected image" loading="lazy">
+      <div class="loader" id="imgLoader"></div>
+    </div>
+    
+    <div class="image-info">
+      <p><i class="fas fa-shield-alt"></i> This image was protected with client-side encryption.</p>
+      <p><i class="fas fa-clock"></i> Unlocked at: <span id="unlockTime"></span></p>
+    </div>
+    
+    <button id="backBtn" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to Login</span>
+    </button>
+  </section>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const loginBox = document.getElementById('loginBox');
+    const contentBox = document.getElementById('content');
+    const passwordInput = document.getElementById('password');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const protectedImg = document.getElementById('protectedImg');
+    const imgPlaceholder = document.getElementById('imgPlaceholder');
+    const backBtn = document.getElementById('backBtn');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('passwordField');
+    const loader = document.getElementById('loader');
+    const imgLoader = document.getElementById('imgLoader');
+    const unlockTime = document.getElementById('unlockTime');
+    
+    // Correct password and image source from data attributes
+    const correctPassword = contentBox.getAttribute('data-password');
+    const imageSrc = contentBox.getAttribute('data-src');
+    
+    // Set image source
+    protectedImg.setAttribute('data-src', imageSrc);
+    
+    // Toggle password visibility
+    togglePassword.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      
+      // Toggle eye icon
+      const icon = this.querySelector('i');
+      if (type === 'text') {
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+        this.setAttribute('aria-label', 'Hide password');
+      } else {
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+        this.setAttribute('aria-label', 'Show password');
+      }
+    });
+    
+    // Show password toggle when input has value
+    passwordInput.addEventListener('input', function() {
+      if (this.value.length > 0) {
+        passwordField.classList.add('active');
+      } else {
+        passwordField.classList.remove('active');
+      }
+    });
+    
+    // Unlock button click event
+    unlockBtn.addEventListener('click', unlockContent);
+    
+    // Enter key press event
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        unlockContent();
+      }
+    });
+    
+    // Back button click event
+    backBtn.addEventListener('click', function() {
+      contentBox.classList.remove('visible');
+      contentBox.setAttribute('aria-hidden', 'true');
+      loginBox.classList.remove('hidden');
+      loginBox.setAttribute('aria-hidden', 'false');
+      
+      // Reset password field
+      passwordInput.value = '';
+      passwordField.classList.remove('active');
+      errorMsg.classList.remove('show');
+      
+      // Focus on password input
+      passwordInput.focus();
+    });
+    
+    // Unlock content function
+    function unlockContent() {
+      const enteredPassword = passwordInput.value.trim();
+      
+      // Show loading animation
+      loader.style.display = 'block';
+      unlockBtn.disabled = true;
+      
+      // Simulate network delay for better UX
+      setTimeout(() => {
+        // Check password
+        if (enteredPassword === correctPassword) {
+          // Password correct - show content
+          errorMsg.classList.remove('show');
+          loader.style.display = 'none';
+          
+          // Hide login, show content
+          loginBox.classList.add('hidden');
+          loginBox.setAttribute('aria-hidden', 'true');
+          contentBox.classList.add('visible');
+          contentBox.setAttribute('aria-hidden', 'false');
+          
+          // Set unlock time
+          const now = new Date();
+          unlockTime.textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + now.toLocaleDateString();
+          
+          // Load the image
+          loadImage();
+        } else {
+          // Password incorrect
+          errorMsg.textContent = enteredPassword ? 'Incorrect password. Please try again.' : 'Please enter a password.';
+          errorMsg.classList.add('show');
+          passwordInput.focus();
+          
+          // Shake animation for error
+          passwordInput.style.animation = 'shake 0.5s ease-in-out';
+          setTimeout(() => {
+            passwordInput.style.animation = '';
+          }, 500);
+        }
+        
+        loader.style.display = 'none';
+        unlockBtn.disabled = false;
+      }, 800);
+    }
+    
+    // Load image function
+    function loadImage() {
+      const imgSrc = protectedImg.getAttribute('data-src');
+      
+      // Show image loader
+      imgLoader.style.display = 'block';
+      imgPlaceholder.style.display = 'none';
+      
+      // Set image source and load
+      protectedImg.src = imgSrc;
+      
+      protectedImg.onload = function() {
+        // Hide loader and placeholder, show image
+        imgLoader.style.display = 'none';
+        imgPlaceholder.style.display = 'none';
+        protectedImg.style.display = 'block';
+        
+        // Add fade in effect
+        protectedImg.style.opacity = '0';
+        protectedImg.style.transition = 'opacity 0.5s ease-in';
+        setTimeout(() => {
+          protectedImg.style.opacity = '1';
+        }, 100);
+      };
+      
+      protectedImg.onerror = function() {
+        // Handle image load error
+        imgLoader.style.display = 'none';
+        imgPlaceholder.innerHTML = `
+          <i class="fas fa-exclamation-triangle" style="color: #f72585;"></i>
+          <p>Failed to load image. The image may have been moved or is unavailable.</p>
+          <p style="font-size: 0.9rem; margin-top: 10px;">Image URL: ${imgSrc.substring(0, 50)}...</p>
+        `;
+        imgPlaceholder.style.display = 'flex';
+      };
+    }
+    
+    // Initial focus on password input
+    passwordInput.focus();
+    
+    // Add responsive behavior for password toggle on mobile
+    function handleResponsiveBehavior() {
+      if (window.innerWidth <= 768) {
+        // On mobile, password toggle is always visible if there's text
+        if (passwordInput.value.length > 0) {
+          passwordField.classList.add('active');
+        }
+      } else {
+        // On desktop, only show when focused or has text
+        passwordInput.addEventListener('focus', function() {
+          if (this.value.length > 0) {
+            passwordField.classList.add('active');
+          }
+        });
+        
+        passwordInput.addEventListener('blur', function() {
+          setTimeout(() => {
+            if (this.value.length === 0) {
+              passwordField.classList.remove('active');
+            }
+          }, 200);
+        });
+      }
+    }
+    
+    // Initialize responsive behavior
+    handleResponsiveBehavior();
+    window.addEventListener('resize', handleResponsiveBehavior);
+  });
+</script>
+</body>
+</html>
